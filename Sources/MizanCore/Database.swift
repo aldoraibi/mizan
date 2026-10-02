@@ -3,10 +3,10 @@ import SQLite3
 
 /// مكان الاستخدام: أقسام Claude الثلاثة، وأدوات الذكاء الاصطناعي الأخرى.
 public enum Kind: String, CaseIterable, Sendable {
-    case chat, cowork, code, chatgpt, gemini
+    case chat, cowork, code, chatgpt, gemini, grok, elevenlabs, higgsfield, googlevids
 
     public static let claudeSections: [Kind] = [.chat, .cowork, .code]
-    public static let otherTools: [Kind] = [.chatgpt, .gemini]
+    public static let otherTools: [Kind] = [.chatgpt, .gemini, .grok, .elevenlabs, .higgsfield, .googlevids]
     public var isClaude: Bool { Kind.claudeSections.contains(self) }
 }
 

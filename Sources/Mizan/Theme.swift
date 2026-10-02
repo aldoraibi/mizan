@@ -52,6 +52,10 @@ extension Kind {
         case .code: Color(hex: 0x64718A)
         case .chatgpt: Color(hex: 0xB7C2D4)
         case .gemini: Color(hex: 0x7C889E)
+        case .elevenlabs: Color(hex: 0xA9B4C6)
+        case .grok: Color(hex: 0x8C98AD)
+        case .higgsfield: Color(hex: 0xC4CDDB)
+        case .googlevids: Color(hex: 0x6E7B93)
         }
     }
 }
@@ -456,6 +460,10 @@ extension Kind {
         case .code: "chevron.left.forwardslash.chevron.right"       // برمجة
         case .chatgpt: "brain.head.profile"                         // مساعد عام
         case .gemini: "atom"                                        // مساعد متعدد الوسائط
+        case .elevenlabs: "waveform"                                // توليد الصوت
+        case .grok: "sparkles"                                      // مساعد عام
+        case .higgsfield: "film"                                    // توليد الصور والفيديو
+        case .googlevids: "play.rectangle"                          // تحرير الفيديو
         }
     }
 }
@@ -473,7 +481,7 @@ struct KindIcon: View {
                 .strokeBorder(Color.white.opacity(0.22), lineWidth: 0.8))
             .overlay(Image(systemName: kind.symbol)
                 .font(.system(size: size * 0.44, weight: .semibold))
-                .foregroundStyle([.code, .gemini].contains(kind) ? Color(hex: 0xEEF2F8) : Color(hex: 0x141A24)))
+                .foregroundStyle([.code, .gemini, .googlevids, .grok].contains(kind) ? Color(hex: 0xEEF2F8) : Color(hex: 0x141A24)))
             .frame(width: size, height: size)
             .shadow(color: .black.opacity(0.25), radius: 3, y: 1)
     }

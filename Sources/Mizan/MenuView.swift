@@ -451,8 +451,8 @@ struct PermissionBanner: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(tr("يحتاج ميزان صلاحية Accessibility", "Mizan needs Accessibility access")).font(.mz(13, .bold))
-            Text(tr("لمعرفة المكان المفتوح من عنوان الصفحة فقط: قسم Claude، أو ChatGPT و Gemini في المتصفح. لا يقرأ محادثاتك، ولا يرسل شيئاً خارج جهازك.",
-                    "Only to read the page address: which Claude section, or ChatGPT and Gemini in your browser. It never reads your conversations or sends anything off your Mac."))
+            Text(tr("لمعرفة المكان المفتوح من عنوان الصفحة فقط: قسم Claude، أو أدوات الذكاء الاصطناعي الأخرى في المتصفح. لا يقرأ محادثاتك، ولا يرسل شيئاً خارج جهازك.",
+                    "Only to read the page address: which Claude section, or other AI tools in your browser. It never reads your conversations or sends anything off your Mac."))
                 .font(.mz(11)).foregroundStyle(pal.muted).fixedSize(horizontal: false, vertical: true)
             Text(tr("إن بدت ممنوحة في الإعدادات: احذف Mizan بزر −، ثم أضفه من جديد.",
                     "If it already looks enabled: remove Mizan with −, then add it again."))

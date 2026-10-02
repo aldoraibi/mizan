@@ -12,6 +12,11 @@ final class Tracker {
         "com.apple.Safari", "com.google.Chrome", "company.thebrowser.Browser", "com.microsoft.edgemac",
         "com.brave.Browser", "com.operasoftware.Opera", "com.vivaldi.Vivaldi", "com.google.Chrome.canary",
     ]
+    /// تطبيقات الويب المستقلة (Safari: «إضافة إلى Dock»، و Chrome/Edge/Brave: «تثبيت الصفحة كتطبيق»)
+    /// لها معرّف خاص بها وتفتح الموقع في نافذة وحده بلا شريط المتصفح.
+    static let webAppPrefixes = ["com.apple.Safari.WebApp", "com.google.Chrome.app.", "com.microsoft.edgemac.app.",
+                                 "com.brave.Browser.app.", "company.thebrowser.Browser.app."]
+    static func isWebApp(_ id: String) -> Bool { webAppPrefixes.contains { id.hasPrefix($0) } }
     static let tick: TimeInterval = 5
 
     private let db: Database
@@ -70,6 +75,10 @@ final class Tracker {
             kind = lastClaudeKind
         } else if Self.browsers.contains(id), Self.hasAccessibility {
             kind = pageKind(of: app.processIdentifier, anyPage: true)
+        } else if Self.isWebApp(id) {
+            // الموقع مفتوح كتطبيق مستقل: نقرأ عنوانه، وإن تعذّر نعرفه من اسم التطبيق (مثل «Grok»)
+            kind = (Self.hasAccessibility ? pageKind(of: app.processIdentifier, anyPage: true) : nil)
+                ?? SectionClassifier.kind(forAppName: app.localizedName ?? "")
         } else {
             kind = nil
         }

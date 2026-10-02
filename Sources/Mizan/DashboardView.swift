@@ -75,7 +75,7 @@ struct ReportContent: View {
                 insights.panel(pal, padding: 0)
                 columns("Claude", Kind.claudeSections).panel(pal)
                 if Kind.otherTools.contains(where: { (stats.kinds[$0]?.userTime ?? 0) > 0 }) {
-                    columns(tr("أدوات أخرى", "Other tools"), Kind.otherTools).panel(pal)
+                    columns(tr("أدوات أخرى", "Other tools"), Kind.otherTools.filter { (stats.kinds[$0]?.userTime ?? 0) > 0 }).panel(pal)
                 }
                 chart.panel(pal)
                 AccuracyNote(liveSince: liveSince).panel(pal)
@@ -114,17 +114,22 @@ struct ReportContent: View {
     private func columns(_ heading: String, _ kinds: [Kind]) -> some View {
         VStack(alignment: .leading, spacing: 14) {
             Eyebrow(heading)
-            HStack(alignment: .top, spacing: 0) {
-                ForEach(Array(kinds.enumerated()), id: \.element) { i, k in
-                    if i > 0 { Hairline(vertical: true).padding(.horizontal, 22) }
-                    KindColumn(kind: k, s: stats.kinds[k]!)
+            // ثلاثة أعمدة في كل صف
+            let rows = stride(from: 0, to: kinds.count, by: 3).map { Array(kinds[$0..<min($0 + 3, kinds.count)]) }
+            ForEach(Array(rows.enumerated()), id: \.offset) { r, row in
+                if r > 0 { Hairline() }
+                HStack(alignment: .top, spacing: 0) {
+                    ForEach(Array(row.enumerated()), id: \.element) { i, k in
+                        if i > 0 { Hairline(vertical: true).padding(.horizontal, 22) }
+                        KindColumn(kind: k, s: stats.kinds[k]!)
+                    }
+                    ForEach(0..<(3 - row.count), id: \.self) { _ in
+                        Hairline(vertical: true).padding(.horizontal, 22).opacity(0)
+                        Color.clear.frame(maxWidth: .infinity)
+                    }
                 }
-                if kinds.count < 3 {
-                    Hairline(vertical: true).padding(.horizontal, 22).opacity(0)
-                    Color.clear.frame(maxWidth: .infinity)
-                }
+                .fixedSize(horizontal: false, vertical: true)
             }
-            .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -290,8 +295,8 @@ struct AccuracyNote: View {
             Group {
                 Text(tr("• وقتك النشط يُقاس لحظياً: أداة الذكاء الاصطناعي في المقدّمة، وآخر حركة للفأرة أو لوحة المفاتيح قبل أقل من مدة الخمول التي اخترتها. القراءة الطويلة دون تحريك شيء قد تُحسب خمولاً.",
                         "• Active time is measured live: the AI tool is in front and you touched the mouse or keyboard within your idle threshold. Long reading without moving anything may count as idle."))
-                Text(tr("• يُعرف ChatGPT و Gemini من تطبيقيهما أو من عنوان الصفحة في المتصفح (Safari و Chrome وغيرهما).",
-                        "• ChatGPT and Gemini are detected from their apps or from the page address in your browser (Safari, Chrome and others)."))
+                Text(tr("• تُعرف الأدوات الأخرى (ChatGPT و Gemini و Grok و ElevenLabs و Higgsfield و Google Vids) من تطبيقاتها أو من عنوان الصفحة في المتصفح (Safari و Chrome وغيرهما).",
+                        "• Other tools (ChatGPT, Gemini, Grok, ElevenLabs, Higgsfield, Google Vids) are detected from their apps or from the page address in your browser (Safari, Chrome and others)."))
                 Text(tr("• «التقديري» مستنتج من أوقات رسائلك في سجلات Code و Cowork قبل تشغيل ميزان، وليس قياساً فعلياً. لا توجد سجلات محلية لـ Chat ولا للأدوات الأخرى.",
                         "• “Estimated” is inferred from your message times in Code and Cowork logs before Mizan ran — not a real measurement. Chat and other tools keep no local logs."))
                 Text(tr("• «عمل الوكيل» هو وقت عمل Claude وحده في العمل المشترك والبرمجة، مأخوذ من سجلاته: من رسالتك حتى آخر نشاط له، ويُطرح منه أي وقت كنت فيه نشطاً.",

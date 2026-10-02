@@ -26,13 +26,18 @@ public extension Kind {
         case .code: tr("البرمجة", "Code", lang)
         case .chatgpt: "ChatGPT"
         case .gemini: "Gemini"
+        case .elevenlabs: "ElevenLabs"
+        case .grok: "Grok"
+        case .higgsfield: "Higgsfield"
+        case .googlevids: "Google Vids"
         }
     }
     /// الاسم الإنجليزي الأصلي — يُستخدم كوسم ثابت.
     var tag: String {
         switch self {
         case .chat: "Chat"; case .cowork: "Cowork"; case .code: "Code"
-        case .chatgpt: "ChatGPT"; case .gemini: "Gemini"
+        case .chatgpt: "ChatGPT"; case .gemini: "Gemini"; case .elevenlabs: "ElevenLabs"
+        case .grok: "Grok"; case .higgsfield: "Higgsfield"; case .googlevids: "Google Vids"
         }
     }
 }
