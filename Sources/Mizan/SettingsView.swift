@@ -12,6 +12,8 @@ struct SettingsView: View {
     @AppStorage("dailyLimitHours") private var dailyLimitHours = 6.0
     @AppStorage("weeklySummaryEnabled") private var weeklySummaryEnabled = true
     @AppStorage("monthStartDay") private var monthStartDay = 1
+    @AppStorage("autoUpdateCheck") private var autoUpdateCheck = true
+    @ObservedObject private var updater = Updater.shared
     @AppStorage("dayStartHour") private var dayStartHour = 0
     @AppStorage("menuTransparency") private var transparency = 0.8
 
@@ -102,9 +104,24 @@ struct SettingsView: View {
                         .buttonStyle(QuietButton()).disabled(model.importing)
                 }
 
+                section(tr("التحديثات", "Updates")) {
+                    toggle(tr("تحقّق من التحديثات تلقائياً مرة في اليوم", "Check for updates daily"), $autoUpdateCheck)
+                    HStack {
+                        Text(updateStatus).foregroundStyle(updater.available != nil ? Color.mizanOn : pal.muted)
+                        Spacer()
+                        if updater.available != nil {
+                            Button(tr("تنزيل", "Download")) { updater.openDownload() }.buttonStyle(QuietButton(primary: true))
+                        }
+                        Button(tr("تحقّق الآن", "Check now")) { updater.check() }
+                            .buttonStyle(QuietButton()).disabled(updater.state == .checking)
+                    }
+                    note(tr("يسأل صفحة الإصدارات العامة في GitHub عن رقم آخر إصدار فقط، ولا يرسل أي شيء عنك أو عن استخدامك، ولا يثبّت شيئاً وحده.",
+                            "It only asks GitHub's public releases page for the latest version number. Nothing about you or your usage is sent, and nothing installs by itself."))
+                }
+
                 section(tr("الخصوصية", "Privacy")) {
-                    note(tr("لا يتصل ميزان بالإنترنت، ولا يقرأ نصوص محادثاتك. كل البيانات في ملف واحد على جهازك:",
-                            "Mizan never connects to the internet and never reads your conversations. All data lives in one file on your Mac:"))
+                    note(tr("ميزان لا يرسل بياناتك إلى أي مكان، ولا يقرأ نصوص محادثاتك. اتصاله الوحيد بالإنترنت هو التحقق من التحديثات، ويمكنك إيقافه. كل البيانات في ملف واحد على جهازك:",
+                            "Mizan never sends your data anywhere and never reads your conversations. Its only internet use is the update check, which you can turn off. All data lives in one file on your Mac:"))
                     Text("~/Library/Application Support/Mizan/mizan.sqlite")
                         .font(.system(size: 11, design: .monospaced)).foregroundStyle(pal.muted)
                         .textSelection(.enabled).environment(\.layoutDirection, .leftToRight)
@@ -145,6 +162,17 @@ struct SettingsView: View {
             Text(value).font(.display(16)).monospacedDigit().frame(minWidth: 64)
             Button { b.wrappedValue = min(range.upperBound, b.wrappedValue + step) } label: { Image(systemName: "plus") }
                 .buttonStyle(QuietButton())
+        }
+    }
+
+    private var updateStatus: String {
+        let cur = tr("الإصدار الحالي \(Updater.current)", "Current version \(Updater.current)")
+        switch updater.state {
+        case .checking: return tr("جارٍ التحقق…", "Checking…")
+        case .upToDate: return rtlIsolated(cur + tr(" · أحدث إصدار", " · up to date"))
+        case .available(let v): return rtlIsolated(tr("الإصدار \(v) متاح", "Version \(v) available"))
+        case .failed: return rtlIsolated(cur + tr(" · تعذّر التحقق", " · couldn't check"))
+        case .idle: return rtlIsolated(cur)
         }
     }
 

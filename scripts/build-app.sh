@@ -21,14 +21,14 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
   <key>CFBundleDisplayName</key><string>ميزان</string>
   <key>CFBundleExecutable</key><string>Mizan</string>
   <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>1.1</string>
+  <key>CFBundleShortVersionString</key><string>1.2</string>
   <key>ATSApplicationFontsPath</key><string>Fonts</string>
-  <key>CFBundleVersion</key><string>3</string>
+  <key>CFBundleVersion</key><string>4</string>
   <key>LSMinimumSystemVersion</key><string>14.0</string>
   <key>LSUIElement</key><true/>
   <key>CFBundleIconFile</key><string>AppIcon</string>
   <key>CFBundleDevelopmentRegion</key><string>ar</string>
-  <key>NSHumanReadableCopyright</key><string>بيانات محلية فقط — لا اتصال بالإنترنت</string>
+  <key>NSHumanReadableCopyright</key><string>بيانات محلية فقط — الاتصال الوحيد للتحقق من التحديثات</string>
 </dict></plist>
 PLIST
 # توقيع محلي بمتطلّب ثابت (المعرّف فقط) حتى لا تسقط صلاحية Accessibility مع كل إعادة بناء.

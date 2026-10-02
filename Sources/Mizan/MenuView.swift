@@ -11,6 +11,7 @@ struct MenuView: View {
     @AppStorage("menuTransparency") private var transparency = 0.8
     @State private var hovered: Kind?
     @State private var logoHover = false
+    @ObservedObject private var updater = Updater.shared
     @State private var hint: (kind: Kind, text: String)?
 
     private var visibleKinds: [Kind] {
@@ -24,6 +25,7 @@ struct MenuView: View {
             header.padding(.bottom, 12)
             Hairline()
             if !model.hasAccessibility { PermissionBanner().padding(.top, 10) }
+            if updater.available != nil { UpdateBanner().padding(.top, 10) }
             hero.padding(.vertical, 14)
             month.padding(.bottom, 12)
             Hairline()

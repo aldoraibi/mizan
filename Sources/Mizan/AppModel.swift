@@ -67,6 +67,7 @@ final class AppModel: ObservableObject {
             return
         }
         tracker.start()
+        Updater.shared.start()
         refresh()
         runImport()
         importTimer = Timer.scheduledTimer(withTimeInterval: 5 * 60, repeats: true) { [weak self] _ in
